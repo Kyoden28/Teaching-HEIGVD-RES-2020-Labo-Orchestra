@@ -1,16 +1,16 @@
 /**
  * @author Christian Gomes & Johann Werkle
  * @file   Auditor Application
+ * @date   27.06.2021
  */
 
+ //Imports modules
  const net = require('net'); 
  const dgram = require('dgram'); 
-
- const tcp_s = net.createServer();
  const moment = require('moment');
  const protocol = require('./auditor-protocol');
  
- //Instruments 
+ //Instruments Map
  const instruments = new Map();
  instruments.set('ti-ta-ti', 'piano');
  instruments.set('pouet', 'trumpet');
@@ -18,11 +18,11 @@
  instruments.set('gzi-gzi', 'violin');
  instruments.set('boum-boum', 'drum');
  
- //Storing musicians
+ //Musicians lists
  const musicians = new Map();
-
- const socket = dgram.createSocket('udp4');
+  
  //Creating a datagram socket
+ const socket = dgram.createSocket('udp4');
  socket.bind(protocol.PROTOCOL_PORT, function() {
      console.log("Joining multicast group");
      socket.addMembership(protocol.PROTOCOL_MULTICAST_ADDRESS);
@@ -35,8 +35,6 @@
  
      const res = JSON.parse(msg);
 
-     //console.log(res);
-
      //Testing musician with data received
      var musician = {
          instrument : instruments.get(res.instrument),
@@ -48,19 +46,25 @@
      console.log(musicians);
  
  });
- 
+
+
+ //TCP PART
+ const tcp_s = net.createServer();
+
+ //Server TCP on Listening
  tcp_s.listen(protocol.PROTOCOL_PORT, function() {
      console.log("Now listening with TCP socket on port " + protocol.PROTOCOL_PORT);    
  });
- 
+
+ //Server TCP on connection
  tcp_s.on('connection', function(socket) {
  
-    console.log("A connection TCP ON");
-
     var currentMusician = [];
 
+    //Checks the musicians lists
     musicians.forEach((musician) => {
 
+        //Check the activeSince vs protocol timing
         if(moment(Date.now()).diff(musician.activeSince, 'seconds') > protocol.TIMEOUT)
         {
             musicians.delete(musician);
@@ -70,8 +74,8 @@
 
     });
  
+     //Prepare the payload
      payload = Buffer.from(JSON.stringify(currentMusician));
-     //console.log("Payload " + payload);
      socket.write(payload);
      socket.end();
  }) 

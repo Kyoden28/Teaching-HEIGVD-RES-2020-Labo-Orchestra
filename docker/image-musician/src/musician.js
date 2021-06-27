@@ -1,9 +1,10 @@
 /**
  * @author Christian Gomes & Johann Werkle
  * @file   Musician Application
+ * @date   27.06.2021
  */
 
-//Imports
+ //Imports modules
 const protocol = require('./orchestra-protocol');
 const dgram = require('dgram');
 const { v4: uuidv4 } = require('uuid');
@@ -18,11 +19,12 @@ instruments.set("flute", "trulu");
 instruments.set("violin", "gzi-gzi");
 instruments.set("drum", "boum-boum");
 
+
+//Function musician with a generated uuid and instrument given by line command
 function Musician() {
 
     this.uuid =  uuidv4();
     this.instrument = instrument;
-
 
     Musician.prototype.play = function() {
 
@@ -43,6 +45,7 @@ function Musician() {
 
     }
 
+    //Send all seconds
     setInterval(this.play.bind(this),1000);
 
 }
@@ -50,7 +53,7 @@ function Musician() {
 //Get properties about line commande
 var instrument = process.argv[2];
 
-//Detect null argument
+//Detect no argument, and define the first instrument
 if(instrument == null)
     instrument = 'piano';
 
