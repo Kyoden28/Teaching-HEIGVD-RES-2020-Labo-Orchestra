@@ -1,0 +1,15 @@
+{
+  "name": "musician",
+  "version": "1.0.0",
+  "description": "Musicians for Laboratory Orchestra",
+  "main": "musician.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christian Gomes & Johann Werkle",
+  "license": "ISC",
+  "dependencies": {
+    "dgram": "^1.0.1",
+    "uuid": "^8.3.2"
+  }
+}
